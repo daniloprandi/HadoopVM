@@ -1,0 +1,1190 @@
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------			CMD UBUNTU LINUX			------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------  		HADOOP  	----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+-- LINK
+
+https://phoenixnap.com/kb/install-hadoop-ubuntu
+
+
+
+https://phoenixnap.com/kb/how-to-create-sudo-user-on-ubuntu
+
+- switch to user 'prandi'
+sudo usermod -aG sudo hdoop
+- come back to 'hdoop' user 
+
+
+
+
+
+
+- HADOOP 3.2.1
+
+wget https://archive.apache.org/dist/hadoop/common/hadoop-3.2.1/hadoop-3.2.1.tar.gz
+
+tar xzf hadoop-3.2.1.tar.gz
+
+
+- HADOOP PATH
+
+export HADOOP_HOME=/home/hdoop/hadoop-3.2.1
+
+
+ 
+
+
+#################		~/.bashrc 		#################
+
+
+#HADOOP RELATED OPTIONS
+export HADOOP_HOME=/home/hdoop/hadoop-3.2.1
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
+
+
+
+
+
+################# 		hadoop-env.sh 		#################
+
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+
+
+
+################# 		core-site.xml 		#################
+
+
+<property>
+  <name>hadoop.tmp.dir</name>
+  <value>/home/hdoop/hadoop-3.2.1/tmpdata</value>
+</property>
+<property>
+  <name>fs.default.name</name>
+  <value>hdfs://127.0.0.1:9000</value>
+</property>
+
+
+
+-----------
+
+
+mkdir /home/hdoop/hadoop-3.2.1/tmpdata
+
+
+
+
+#################		hdfs-site.xml 		#################
+
+THIS FIELD IS FOR NUMBERS OF NODES
+
+
+<property>
+  <name>dfs.data.dir</name>
+  <value>/home/hdoop/hadoop-3.2.1/dfsdata/datanode</value>
+</property>
+<property>
+  <name>dfs.data.dir</name>
+  <value>/home/hdoop/hadoop-3.2.1/dfsdata/namenode</value>
+</property>
+<property>
+  <name>dfs.replication</name>
+  <value>1</value>
+</property>
+
+
+
+
+
+---------------------
+
+
+sudo mkdir -p /home/hdoop/hadoop-3.2.1/dfsdata/namenode
+sudo mkdir -p /home/hdoop/hadoop-3.2.1/dfsdata/datanode
+
+
+
+
+
+
+
+#################		mapred-site.xml		#################
+
+<property> 
+  <name>mapreduce.framework.name</name> 
+  <value>yarn</value> 
+</property> 
+
+
+
+
+
+
+#################		yarn-site.xml		#################
+
+
+<property>
+  <name>yarn.nodemanager.aux-services</name>
+  <value>mapreduce_shuffle</value>
+</property>
+<property>
+  <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+  <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+<property>
+  <name>yarn.resourcemanager.hostname</name>
+  <value>127.0.0.1</value>
+</property>
+<property>
+  <name>yarn.acl.enable</name>
+  <value>0</value>
+</property>
+<property>
+  <name>yarn.nodemanager.env-whitelist</name>    
+  <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PERPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+</property>
+
+
+
+
+
+start-dfs.sh
+start-yarn.sh
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------ 		MYSQL 		--------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04 (meglio)
+
+
+
+- NEW USER 			*** HIVESUER ***
+
+CREATE USER 'hiveuser'@'localhost' IDENTIFIED BY '24041986Hive.';
+GRANT ALL PRIVILEGES ON *.* TO 'hiveuser'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+SHOW GRANTS;
+
+
+--
+
+
+- NEW USER 			*** HDFS ***
+
+CREATE USER 'hdfs'@'localhost' IDENTIFIED BY 'Hadoop321.';
+GRANT ALL PRIVILEGES ON *.* TO 'hdfs'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+SHOW GRANTS;
+
+--
+
+
+
+- ALTER USER
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'Mysql321rooT.';
+
+SOURCE /home/hdoop/apache-hive-3.1.2-bin/scripts/metastore/upgrade/mysql/
+
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+
+GRANT ALL PRIVILEGES ON `%`.* TO root@localhost IDENTIFIED BY '[Mysql321rooT.]' WITH GRANT OPTION;
+
+
+
+-- CHANGE PASSWORD
+
+UPDATE mysql.user SET authentication_string = PASSWORD('24041986RootMysql._') WHERE User = 'root' AND Host = 'localhost'; FLUSH PRIVILEGES;
+
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Current-Root-Password'; FLUSH PRIVILEGES;
+
+
+
+-- uninstall mysql 
+
+https://askubuntu.com/questions/172514/how-do-i-uninstall-mysql
+
+
+
+
+
+-- access db
+
+sudo mysql -u hiveuser -p
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------ 		HIVE 		--------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+-- VEDERE EMAIL DEL 25/08/2024 CON I FILES DI CONFIGURAZIONE HIVE 
+
+
+
+*** VERIFICARE PER DATABASE DERBY ***
+
+
+per inizializzare derby database ho fatto cosi:
+
+-- cd $HIVE_HOME/bin
+-- $HIVE_HOME/bin/schematool -dbType derby -initSchema
+-- hive 
+
+
+
+
+
+
+
+-- LINK
+
+https://phoenixnap.com/kb/install-hive-on-ubuntu
+
+
+
+-- PER CONFIGURARE HIVE CON MYSQL 
+https://www.youtube.com/watch?v=kS4oGRTyen4
+
+
+
+-- SCARICA HIVE 
+
+wget https://dlcdn.apache.org/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz
+tar xzf apache-hive-3.1.2-bin.tar.gz
+
+
+
+
+# HIVE OPTS
+export HIVE_HOME=/home/hdoop/apache-hive-3.1.3-bin
+export PATH=$PATH:$HIVE_HOME/bin
+export HADOOP_USER_CLASSPATH_FIRST=true
+
+
+
+
+# HADOOP_HOME VARIABLE
+export HADOOP_HOME=/home/hdoop/hadoop-3.2.1
+
+
+
+
+
+
+######## 		DOWNLOAD MYSQL CONNECTOR 	   ############
+
+
+wget http://ftp.ntu.edu.tw/MySQL/Downloads/Connector-J/mysql-connector-java-8.0.28.tar.gz
+
+-- devo estrarre i file e prendere il file jar al suo internooooo
+
+cd $HIVE_HOME/bin
+
+
+schematool --dbType mysql -initSchema
+
+
+Exception in thread "main" java.lang.NoSuchMethodError: com.google.common.base.Preconditions.checkArgument(ZLjava/lang/String;Ljava/lang/Object;)V
+
+
+java.net.URISyntaxException: Relative path in absolute URI: ${system:java.io.tmpdir%7D/$%7Bsystem:user.name%7D
+
+
+
+**********
+
+
+-- RISOLVO ECCEZIONE COSI':
+
+ls $HIVE_HOME/lib
+
+ls $HADOOP_HOME/share/hadoop/hdfs/lib
+
+rm $HIVE_HOME/lib/guava-19.0.jar
+
+cp $HADOOP_HOME/share/hadoop/hdfs/lib/guava-27.0-jre.jar $HIVE_HOME/lib/
+
+schematool --dbType mysql -initSchema
+
+
+**********
+
+
+
+hive
+
+!clear;
+
+quit;
+
+
+
+
+
+
+##########		EXTERNAL TABLES		##########
+
+
+
+create external table if not exists daticovid20220316(
+	data datetime, 
+	stato string,
+	codice_regione int,
+	denominazione_regione string,
+	lat string,
+	long string,
+	ricoverati_con_sintomi	int,
+	terapia_intensiva	
+	totale_ospedalizzati	
+	isolamento_domiciliare	
+	totale_positivi	
+	variazione_totale_positivi int,
+	nuovi_positivi	int,
+	dimessi_guariti	int,
+	deceduti int,
+	casi_da_sospetto_diagnostico int,
+	casi_da_screening int,
+	totale_casi	int,
+	tamponi	Totale int,
+	casi_testati int,
+	note string,
+	ingressi_terapia_intensiva int,
+	note_test string,
+	note_casi string
+)
+comment 'contagi per regione'
+row format delimited
+fields terminated by ','
+stored as csv
+location '/user/files/covid/DatiCovid20220316';
+
+
+
+
+
+****** ATTENZIONE ******
+
+########## 		SET ENGINE (MR/SPARK/TEZ) 		############
+
+set hive.execution.engine;
+set hive.execution.engine=tez;
+
+
+
+
+
+
+ 
+
+
+
+
+######################################################################################################################################################################################
+																																																																																									 ###
+########################################################## 		HBASE PSEUDO DISTR. MODE 		############################################################################################
+																																																																																									 ###
+######################################################################################################################################################################################
+																																																																																									 ###
+######################################################################################################################################################################################
+
+
+-- INSTALLARE VERSIONE HBASE 2.3.2 SE SI USA HADOOP 3.2.1
+
+
+
+-- LINK
+
+https://hbase.apache.org/book.html
+
+https://www.bogotobogo.com/Hadoop/BigData_hadoop_HBase_Pseudo_Distributed.php
+
+
+
+
+-- DOWNLOAD
+
+wget https://archive.apache.org/dist/hbase/2.3.2/hbase-2.3.2-bin.tar.gz
+
+
+
+
+
+
+#HBASE RELATED OPTIONS
+export HBASE_HOME=/home/hdoop/hbase-2.3.2
+export PATH=$PATH:$HBASE_HOME/bin
+
+
+
+
+
+
+-- hbase-env.sh [ UNCOMMENT / CHECK THESE FIELDS ]
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HBASE_REGIONSERVERS=${HBASE_HOME}/conf/regionservers
+export HBASE_MANAGES_ZK=true
+
+
+
+
+exit 
+
+
+
+-- WEB UI
+
+http://localhost:16010
+
+
+
+########		IMPORT IN HBASE FROM HDFS 		############
+
+
+-- CREA FILE CSV IN LOCALE (NOME FILE: hbasehdfs / ATTENZIONE AL FORMATO) 
+
+1,ROSSI,MARIO,51
+2,BIANCHI,MARCO,34
+3,NERI,ALESSIO,45
+4,VERDI,MARIA,23
+5,BLU,GIOVANNA,43
+
+
+-- TRASFERISCILO IN HDFS
+
+hadoop fs -put /home/prandi/Documenti/hbasehdfs /user/hive/warehouse
+
+
+-- SE DEVO ELIMINARLO
+
+hadoop fs -rm -r /user/hive/warehouse/hbasehdfs
+
+
+
+-- CREA TABELLA IN HBASE
+
+create 'tblhbasehdfs',{NAME=> 'cf'}
+
+
+-- SE DEVO CANCELLARE LA TABELLA
+
+disable 'tblhbasehdfs'
+drop 'tblhbasehdfs'
+
+
+-- APRI SHELL UTENTE hdoop E IMPORTA I DATI
+
+hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.separator=',' -Dimporttsv.columns='HBASE_ROW_KEY,cf:cognome,cf:nome,cf:anni' tblhbasehdfs /user/hive/warehouse/hbasehdfs
+
+
+
+-- CONTROLLA I DATI IN HBASE 
+
+scan 'tblhbasehdfs'
+
+
+
+
+
+
+
+
+
+
+
+*********************************************			FINO QUI OK				*********************************************
+
+
+
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+############# 		IMPORT IN HBASE FROM MYSQL 	(verificare) INIZIO		#############
+
+
+-- link
+
+https://www.youtube.com/watch?v=kjXzPCHponM&ab_channel=RRDigital
+
+
+-- CREO 2 TBL - 1 CON PK (employees) E UNA SENZA (departments) e inserisco i dati
+
+CREATE TABLE employees(id int primary key, cognome varchar(20), nome varchar(20), phone varchar(20), salary int);
+insert into employees values(1, 'BIANCHI', 'ANDREA', '0105858587', 2000);insert into employees values(2, 'ROSSI', 'CARLO', '010585456', 1800);insert into employees values(3, 'VERDI', 'MASSIMO', '0105858522', 1900);insert into employees values(4, 'NERI', 'MARIO', '0105858687', 2500);insert into employees values(5, 'MARRONI', 'EUGENIO', '010585747', 2700);
+
+
+CREATE TABLE departments(id int, descr varchar(20), notes varchar(50));
+insert into departments values(1, 'ICT', 'SI ANALIZZANO SISTEMI INFORMATICI');insert into departments values(2, 'ADMIN', 'SI FATTURA E SI RIMBORSANO I CLIENTI');insert into departments values(3, 'TECH', 'SI CREANO NUOVI PRODOTTI');insert into departments values(4, 'SALES', 'VENDITE E ASSISTENZA TECNICA');
+
+
+
+
+-- APRO SHELL hdoop E IMPORTO I DATI DA MYSQL IN HBASE (IN CUI NON HO LA TBL, LA CREO CON LO SCRIPT)
+
+-- SE HO IL PK ...
+sqoop import --connect jdbc:mysql://localhost/dbtest --username hiveuser --P --table employees --hbase-table tblhbemployees --column-family cf1 --hbase-row-key id --hbase-create-table --fields-terminated-by '|';
+
+
+-- RICEVO ECCEZZIONE "Exception in thread "main" java.lang.NoSuchMethodError: org.apache.hadoop.hbase.client.HBaseAdmin.<init>(Lorg/apache/hadoop/conf/Configuration;)V" (NON RISOLTO)
+
+wget https://repo1.maven.org/maven2/org/apache/hbase/hbase-client/2.3.2/hbase-client-2.3.2.jar
+wget https://repo1.maven.org/maven2/org/apache/hbase/hbase-common/2.3.2/hbase-common-2.3.2.jar
+wget https://repo1.maven.org/maven2/org/apache/hbase/hbase-mapreduce/2.3.2/hbase-mapreduce-2.3.2.jar
+wget https://repo1.maven.org/maven2/org/apache/hbase/hbase-protocol/2.3.2/hbase-protocol-2.3.2.jar
+wget https://repo1.maven.org/maven2/org/apache/hbase/hbase-server/2.3.2/hbase-server-2.3.2.jar
+wget https://repo1.maven.org/maven2/org/apache/hbase/hbase-zookeeper/2.3.2/hbase-zookeeper-2.3.2.jar
+wget https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java/2.3.0/protobuf-java-2.3.0.jar
+
+
+
+
+
+
+######## 		IMPORT 			###########
+
+-- link utili
+https://stackoverflow.com/questions/51755213/sqoop-import-from-mysql-into-hbase-java-lang-nosuchmethoderror-org-apache-hado
+
+-- scaricare le jar
+https://repo1.maven.org/maven2/org/apache/hbase/hbase-client/1.2.0/hbase-client-1.2.0.jar
+https://repo1.maven.org/maven2/org/apache/hbase/hbase-common/1.2.0/hbase-common-1.2.0.jar
+https://repo1.maven.org/maven2/org/apache/hbase/hbase-mapreduce/2.2.0/hbase-mapreduce-2.2.0.jar
+https://repo1.maven.org/maven2/org/apache/hbase/hbase-protocol/1.2.0/hbase-protocol-1.2.0.jar
+https://repo1.maven.org/maven2/org/apache/hbase/hbase-server/1.2.0/hbase-server-1.2.0.jar
+https://repo1.maven.org/maven2/org/apache/hbase/hbase-zookeeper/2.0.0/hbase-zookeeper-2.0.0.jar
+https://repo1.maven.org/maven2/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar
+
+
+
+
+
+
+
+
+
+
+sqoop import --connect jdbc:mysql://localhost/dbdiprova --username hiveuser -P --table tbltest --columns "name, surn" --hbase-table tblhbasetest --column-family anagr --hbase-row-key ID -m 1
+
+
+
+
+
+DEFINITIVO
+
+
+
+
+
+
+
+
+
+############# 		IMPORT IN HBASE FROM MYSQL 	(verificare)	FINE 	#############
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------			 SQOOP 				--------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+-- link utili
+
+scarica questo
+
+https://talend-update.talend.com/nexus/content/repositories/libraries/org/apache/sqoop/sqoop/1.4.7/sqoop-1.4.7.jar
+
+
+scarica common lang 
+
+https://commons.apache.org/lang/download_lang.cgi
+
+
+https://www.youtube.com/watch?v=6X0qJ_UV7JE
+
+
+
+-- DOWNLOAD SQOOP 
+
+wget http://archive.apache.org/dist/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+tar -zxvf sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+
+
+
+
+
+-- sudo nano .bashrc 
+# SQOOP OPTS
+export SQOOP_HOME=/home/hdoop/sqoop-1.4.7.bin__hadoop-2.6.0
+export PATH=$PATH:$SQOOP_HOME/bin
+
+
+
+
+
+-- sudo nano $SQOOP_HOME/conf/sqoop-env.sh
+
+#Set path to where bin/hadoop is available
+export HADOOP_COMMON_HOME=/home/hdoop/hadoop-3.2.1
+
+#Set path to where hadoop-*-core.jar is available
+export HADOOP_MAPRED_HOME=/home/hdoop/hadoop-3.2.1
+
+#Set the path to where bin/hive is available
+export HIVE_HOME=/home/hdoop/apache-hive-3.1.3-bin
+
+#set the path to where bin/hbase is available
+export HBASE_HOME=/home/hdoop/hbase-2.3.2
+
+
+-- put mysqlconnector into sqoop lib 
+
+cd mysql-connector-java-8.0.28
+ls
+cp mysql-connector-java-8.0.28.jar $SQOOP_HOME/lib
+
+
+sqoop list-databases --connect jdbc:mysql://localhost --username hiveuser --password 24041986Hive.
+
+
+
+
+
+
+
+
+
+
+########	IMPORT 		########
+
+
+
+APRO MYSQL -> sudo mysql -u root -p (24041986Mysql.)
+
+CREO UN DB -> create database if not exists dbtest; use dbtest;
+
+CREO UNA TABELLA -> create table if not exists tbltest(id int, name varchar(20)); show tables; describe tbltest;
+
+INSERISCO I DATI NELLA TABELLA
+
+INSERT INTO tbltest VALUES(1, 'DANILO');INSERT INTO tbltest VALUES(2,'MARIO');
+
+SELECT * FROM tbltest;
+
+VADO A METTERE I DATI IN UN DB SPECIFICO CHE CREO IN HIVE (PERCORSO: /user/hive/warehouse/dbhivetest)
+
+APRO SHELL DI HIVE
+
+create database if not exists dbhivetest;
+
+APRO SHELL USER HDOOP
+
+sqoop import --connect jdbc:mysql://localhost/dbtest --username hiveuser --P --bindir $SQOOP_HOME/lib --table tbltest --fields-terminated-by ',' --lines-terminated-by "\n"  --hive-import --create-hive-table --hive-database dbhivetest --hive-table tblhivetest -m 1;
+
+
+-- ECCEZIONE -- SCARICA 'commons lang 2.6' JAR
+
+ 
+wget //mirrors.tuna.tsinghua.edu.cn/apache//commons/lang/binaries/commons-lang-2.6-bin.zip
+
+tar -xvf commons-lang-2.6-bin.zip
+
+
+
+-- SE HO  ANCORA ECCEZZIONI SCARICO HIVE COMMON E LO METTO IN SQOOP LIB
+
+-- LINK
+
+https://stackoverflow.com/questions/51661049/error-hive-hiveconfig-could-not-load-org-apache-hadoop-hive-conf-hiveconf-make
+
+
+
+-- DOWNLOAD
+
+http://www.java2s.com/Code/Jar/h/Downloadhivecommon0100jar.htm
+
+
+
+-- IMPORTO I DATI CON SUCCESSO
+
+sqoop import --connect jdbc:mysql://localhost/dbtest --username hiveuser --P --bindir $SQOOP_HOME/lib --table tbltest --fields-terminated-by ',' --lines-terminated-by "\n"  --hive-import --create-hive-table --hive-database dbhivetest --hive-table tblhivetest -m 1;
+
+-- VADO NELLA SHELL DI HIVE E GUARDO TABELLA + DATI NEL MIO DB dbhivetest
+
+
+
+
+
+
+########	EXPORT 		########
+
+
+-- https://www.hdfstutorial.com/sqoop-export-function/
+
+
+-- I NEED A TABLE IN MY RDBMS (MYSQL) FIRST TO IMPORT DATA FROM HDFS / DATABASE HIVE 
+
+
+-- CREO TABELLA -> create table if not exists tbltest_exp(id int, name varchar(20)); show tables; describe tbltest;
+
+sqoop export --connect jdbc:mysql://localhost/dbtest --username hiveuser --P --table tbltest_exp --export-dir /user/hive/warehouse/dbhivetest.db/tblhivetest
+
+
+/user/hive/warehouse/andamento_nazionale.parquet
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------- 			SPARK				 -----------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+-- LINK TUTORIAL SPARK 
+
+https://phoenixnap.com/kb/install-spark-on-ubuntu
+
+
+
+
+-- DOWNLOAD
+
+wget https://dlcdn.apache.org/spark/spark-3.0.3/spark-3.0.3-bin-hadoop2.7.tgz
+
+tar xvf spark-*
+
+
+
+
+sudo nano .profile
+
+
+
+#SPARK RELATED OPTIONS
+export SPARK_HOME=/home/hdoop/spark-3.0.3-bin-hadoop2.7
+export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+export PYSPARK_PYTHON=/usr/bin/python3
+
+
+
+
+source ~/.profile
+
+
+start-master.sh
+
+
+http://127.0.0.1:8080/
+
+
+ 
+
+
+
+- AVVIO COMANDI (ubuntu = 127.0.1.1)
+
+
+start-slave.sh spark://ubuntu:7077		[ WORKER ]
+
+start-slave.sh -c 1 spark://ubuntu:7077
+
+start-slave.sh -m 512M spark://ubuntu:7077
+
+
+
+
+spark-shell
+:q
+
+
+pyspark
+quit()
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------		 ZOOKEEPER 		-------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+-- LINK
+
+https://phoenixnap.com/kb/install-apache-zookeeper
+
+https://phoenixnap.com/kb/how-to-create-sudo-user-on-ubuntu (sudo privilegies)
+
+
+PW ZOOKEEPER = 24041986Zk.
+
+
+wget https://dlcdn.apache.org/zookeeper/zookeeper-3.7.2/apache-zookeeper-3.7.2-bin.tar.gz
+
+
+
+
+
+
+
+
+
+TRA UN TIPO DI INSTALLAZIONE E L'ALTRO RIAVVIARE LA MACCHINA
+
+
+------
+
+cd /opt/zookeeper
+
+systemctl start zookeeper
+
+systemctl status zookeeper
+
+-------
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------	 TEZ	---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*** installation tutorial ***
+
+https://github.com/NitinKumar94/Installing-Apache-Tez
+
+
+*** download link ***
+
+https://dlcdn.apache.org/tez/0.8.4/
+
+
+
+*** download / extract
+
+wget https://dlcdn.apache.org/tez/0.8.4/apache-tez-0.8.4-bin.tar.gz
+tar xzf apache-tez-0.8.4-bin.tar.gz
+
+
+
+*** create folder ***
+
+hdfs dfs -mkdir user/tez
+
+
+*** copy from local to hdfs ***
+hadoop fs -copyFromLocal /home/hdoop/apache-tez-0.8.4-bin /user/tez
+
+
+*** create tez site ***
+cp tez-default-template.xml tez-site.xml
+
+
+
+
+*** VERIFICARE ***
+
+hadoop fs -copyFromLocal $HIVE_HOME/lib/hive-exec-3.1.2.jar hdfs://localhost:8020/user/tez/
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------		KAFKA & ZOOKEEPER		-------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+#################	KAFKA
+
+
+https://www.youtube.com/watch?v=lijWUsVN-mM
+
+
+-- terminal
+
+cd kafka_2.13-3.1.0
+
+zookeeper-server-start.sh config/zookeeper.properties
+
+******* vedere warning "zookeeper audit is disabled" *******************
+
+
+*** jps ***
+
+2416 Jps
+1883 QuorumPeerMain
+
+*** jps ***
+
+kafka-server-start.sh config/server.properties
+
+*** jps ***
+
+1883 QuorumPeerMain
+2431 Kafka
+2847 Jps
+
+*** jps ***
+
+
+
+####################################################################################################################################################################################
+
+############################################################################  ZOOKEEPER 	###########################################################################################
+
+####################################################################################################################################################################################
+
+
+
+https://www.youtube.com/watch?v=VJf_dByBRf4
+
+
+### terminal
+
+cd apache-zookeeper-3.6.3-bin
+
+bin/zkServer.sh 
+
+bin/zkServer.sh  start-foreground
+
+***** (vedere warning: INFO  [main:ZKAuditProvider@42] - ZooKeeper audit is disabled.) *****
+
+bin/zkServer.sh start
+
+echo stat | nc localhost 2181
+
+
+*** jps ***
+
+2088 QuorumPeerMain
+2476 Jps
+
+*** jps ***
+
+
+
+-- DATA ENGINEERING 
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------  		APACHE NIFI  	----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+-- wget https://dlcdn.apache.org/nifi/1.27.0/nifi-1.27.0-bin.zip
+
+-- estrai
+
+
+
+***** BASH *****
+
+# NIFI OPTS
+export NIFI_HOME=/home/hdoop/nifi-1.27.0-bin/nifi-1.27.0
+export PATH=$PATH:$NIFI_HOME/bin
+
+add JAVA_HOME nella BASH:
+
+sudo nano .bashrc 
+
+#JAVA OPTS 
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+source ~/.bashrc
+
+
+nifi.sh start
+nifi.sh stop
+nifi.sh status  
+
+
+-- see book and file 'nifi.properties' at /home/hdoop/nifi-1.27.0-bin/nifi-1.27.0/conf (and see the copy in my gmail)
+
+-- follow this to have USERNAME and PW of NIFI 
+
+https://stackoverflow.com/questions/68876855/apache-nifi-login-issue-after-installation
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------  		APACHE AIRFLOW  	----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+pip install 'apache-airflow[postgres,slack,celery]'
+
+-- provare poi ad aggiungere hdfs,hive,mysql
+
+
+-- INSTALLAZIONE 
+
+sudo mkdir airflow 
+
+sudo chmod a+rwx airflow
+
+export AIRFLOW_HOME=/home/hdoop/airflow 
+
+
+
+set in the bash the path you wanna install AIRFLOW
+# AIRFLOW OPTS
+export AIRFLOW_HOME=/home/hdoop/airflow
+export PATH=$PATH:$AIRFLOW_HOME/bin
+
+
+
+*** COMMANDS ***
+
+https://stackoverflow.com/questions/65656254/how-to-kill-airflow-scheduler-and-webserver
+
+airflow db reset
+
+
+*** USERS *** 
+
+
+https://airflow.apache.org/docs/apache-airflow-providers-fab/stable/cli-ref.html
+
+
+
+airflow users create -u admin -f DANILO -l PRANDI -r Admin -p 'Admin4042?' -e daniloprandi1986@gmail.com
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------  		ELASTIC SEARCH  	----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+-- download https://www.elastic.co/downloads/past-releases/elasticsearch-7-17-0
+
+# ELASTICSEARCH OPTS
+export ELA_HOME=/home/hdoop/elasticsearch-7.17.0-linux-x86_64/elasticsearch-7.17.0
+export PATH=$PATH:$ELA_HOME/bin
+
+
+-- UNCOMMENT THE port 9200 in yml file and adjust params 
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------  		KIBANA  	----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+UNINSTALL 
+
+https://webhostinggeeks.com/howto/how-to-uninstall-kibana-on-ubuntu/
+
+
+
+sudo chmod a+rwx airflow
+
+
+
+https://artifacts.elastic.co/downloads/kibana/kibana-7.0.0-linux-x86_64.tar.gz
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------  		POSTGRES  	----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- UNINSTALL 
+
+https://www.postgresqltutorial.com/postgresql-administration/uninstall-postgresql-ubuntu/
+
+postgresql-client-16                 
+postgresql-client-common         
+postgresql-common                
+postgresql-contrib  
+
+sudo apt-get --purge remove postgresql*
