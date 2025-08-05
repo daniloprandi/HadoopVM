@@ -1,0 +1,2 @@
+# HadoopVM
+macchina virtuale
